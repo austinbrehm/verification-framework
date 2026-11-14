@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="verification-page">
+    <div class="demonstration-procedures">
+        <div class="d-flex align-items-center justify-content-between">
+            <h6 class="mb-0">DEMONSTRATION PROCEDURE</h6>
+            <h2>Step {{ step_number }} of {{ total_steps }}</h2>
+        </div>
+        <h1>{{ procedure_title }}</h1>
+        {% if step.description != "Verification" %}
+            <div class="info-block">
+                <h3>Instructions</h3>
+                <div class="info-content">{{ step.description }}</div>
+            </div>
+        {% endif %}
+
+        <div class="info-block">
+            <div class="info-content expected-result">
+                <h2 class="info-heading">Expected Result</h2>
+                {{ step.expected_result }}
+            </div>
+        </div>
+        
+        <div class="btn-group" role="group" aria-label="Step outcome controls">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio1">Pass</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio2">Fail</label>
+        </div>
+
+        <div class="step-actions">
+            {% if prev_step %}
+                <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=prev_step %}" class="btn btn-secondary step-action-prev">Previous</a>
+            {% else %}
+                <span class="step-action-spacer" aria-hidden="true"></span>
+            {% endif %}
+
+            {% if next_step %}
+                <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=next_step %}" class="btn btn-primary step-action-next">Next</a>
+            {% else %}
+                <a href="{% url 'verification_results' %}" class="btn btn-outline-primary">Submit Results</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

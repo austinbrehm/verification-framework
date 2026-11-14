@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="verification-page">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <div class="demonstration-procedures">
+        <h1>Verification</h1>
+        <div class="buttons">
+            <a href="{% url 'procedures' %}" class="btn btn-primary">Run a Demonstration Procedure</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

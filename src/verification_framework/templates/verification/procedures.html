@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="verification-page">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <div class="demonstration-procedures">
+        <h1>Run a Demonstration Procedure</h1>
+        <form method="POST" action="{% url 'procedures' %}">
+            {% csrf_token %}
+            <select class="form-select form-select-sm" name="selected_procedure" aria-label="Select procedure" required>
+                <option value="" selected disabled>Select a procedure...</option>
+                {% for procedure in procedures %}
+                    <option value="{{ procedure }}">{{ procedure }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Continue</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

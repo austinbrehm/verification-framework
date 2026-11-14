@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="verification-page">
+    <div class="demonstration-procedures">
+        <h1>{{ procedure_title }}</h1>
+        <div class="preconditions">
+            <h2>Preconditions</h2>
+            <ul>
+                {% for precondition in preconditions %}
+                    <li>{{ precondition }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="step-actions">
+            <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=1 %}" class="btn btn-primary">Start Procedure</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
