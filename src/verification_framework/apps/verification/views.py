@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 DEMONSTRATION_ARTIFACTS_PATH = pathlib.Path(settings.BASE_DIR).parent.parent / 'verification_artifacts' / 'demonstration'
 
 
-def load_procedure(procedure_name: str) -> dict:
+def load_procedure(procedure_name: str, procedure_path: pathlib.Path = DEMONSTRATION_ARTIFACTS_PATH) -> dict:
     """Load a procedure YAML file.
     
     Args:
@@ -20,7 +20,7 @@ def load_procedure(procedure_name: str) -> dict:
         Data from the procedure YAML file.
     """
     procedure_name = procedure_name.removesuffix('.yaml')
-    yaml_file = DEMONSTRATION_ARTIFACTS_PATH / f"{procedure_name}.yaml"
+    yaml_file = procedure_path / f"{procedure_name}.yaml"
 
     with open(yaml_file, 'r', encoding='utf-8') as f:
         procedure_data = yaml.safe_load(f) or {}

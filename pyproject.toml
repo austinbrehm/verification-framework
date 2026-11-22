@@ -16,3 +16,17 @@ verification-framework = "verification_framework:main"
 [build-system]
 requires = ["uv_build>=0.13.7,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "verification_framework.config.settings"
+pythonpath = ["src", "src/verification_framework"]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-django>=4.14.0",
+]
