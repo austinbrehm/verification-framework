@@ -282,11 +282,11 @@ p {
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.5rem;
 }
 
 .demonstration-procedures h1 {
-    margin: 0;
+    margin-bottom: 10px;
     font-size: clamp(1.8rem, 3vw, 2.5rem);
     line-height: 1.2;
     color: var(--card-text);
@@ -305,6 +305,15 @@ p {
     margin: 0;
     font-size: 1.35rem;
     line-height: 1.5;
+    color: var(--card-text);
+}
+
+.demonstration-procedures h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--card-text);
 }
 

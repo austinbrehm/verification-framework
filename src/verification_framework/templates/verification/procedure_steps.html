@@ -3,10 +3,22 @@
 <div class="verification-page">
     <div class="demonstration-procedures">
         <div class="d-flex align-items-center justify-content-between">
-            <h6 class="mb-0">DEMONSTRATION PROCEDURE</h6>
-            <h2>Step {{ step_number }} of {{ total_steps }}</h2>
+            <h4>Demonstration Procedure</h4>
+            <h2>In Progress</h2>
         </div>
         <h1>{{ procedure_title }}</h1>
+        <p>Step {{ step_number }} of {{ total_steps }}</p>
+        <div class="progress" style="height: 12px; margin-bottom: 10px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <script>
+                // Update the progress bar width based on the current step
+                var progressBar = document.querySelector('.progress-bar');
+                var progressPercentage = ({{ step_number }} / {{ total_steps }}) * 100;
+                progressBar.style.width = progressPercentage + '%';
+                progressBar.setAttribute('aria-valuenow', progressPercentage);
+                progressBar.textContent = Math.round(progressPercentage) + '%';
+            </script>
+        </div>
         {% if step.description != "Verification" %}
             <div class="info-block">
                 <h3>Instructions</h3>
@@ -21,6 +33,7 @@
             </div>
         </div>
         
+        <h3 style="margin-top: 10px;">Results</h3>
         <div class="btn-group" role="group" aria-label="Step outcome controls">
             <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
             <label class="btn btn-outline-primary" for="btnradio1">Pass</label>
@@ -30,16 +43,25 @@
         </div>
 
         <div class="step-actions">
+            {% if preconditions and not prev_step %}
+                <a href="{% url 'procedure_preconditions' procedure_name=procedure_name %}" class="btn btn-outline-secondary step-action-preconditions">← Preconditions</a>
+            {% endif %}
+
             {% if prev_step %}
-                <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=prev_step %}" class="btn btn-secondary step-action-prev">Previous</a>
+                <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=prev_step %}" class="btn btn-outline-secondary step-action-prev">← Previous</a>
             {% else %}
                 <span class="step-action-spacer" aria-hidden="true"></span>
             {% endif %}
 
             {% if next_step %}
-                <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=next_step %}" class="btn btn-primary step-action-next">Next</a>
+                <a href="{% url 'procedure_step' procedure_name=procedure_name step_number=next_step %}" class="btn btn-primary step-action-next">Next →</a>
             {% else %}
                 <a href="{% url 'verification_results' %}" class="btn btn-outline-primary">Submit Results</a>
+            {% endif %}
+        </div>
+        <div class="stop-procedure d-flex justify-content-end">
+            {% if next_step %}
+                <a href="{% url 'verification' %}" class="btn btn-outline-danger mt-3">Stop Procedure</a>
             {% endif %}
         </div>
     </div>

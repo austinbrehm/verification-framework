@@ -3,7 +3,6 @@
 
 {% block content %}
 <div class="verification-page">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <div class="demonstration-procedures">
         <h1>Run a Demonstration Procedure</h1>
         <form method="POST" action="{% url 'procedures' %}">
@@ -16,6 +15,11 @@
             </select>
             <button type="submit" class="btn btn-primary">Continue</button>
         </form>
+        {% for message in messages %}
+            <div class="alert alert-warning" role="alert">
+                <strong>Error: </strong>{{ message }}
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -2,58 +2,79 @@ import pathlib
 import yaml
 
 from django.conf import settings
+from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect, render
 
 
 DEMONSTRATION_ARTIFACTS_PATH = pathlib.Path(settings.BASE_DIR).parent.parent / 'verification_artifacts' / 'demonstration'
-REQUIRED_PROCEDURE_FIELDS = {'id', 'title', 'steps'}
-REQUIRED_STEP_FIELDS = {'id', 'type', 'description', 'expected_result'}
 
 
-def load_procedure_data(procedure_name):
-    """Load and validate a procedure YAML file before rendering it."""
+def load_procedure(procedure_name: str) -> dict:
+    """Load a procedure YAML file.
+    
+    Args:
+        procedure_name (str): The name of the procedure YAML file (without the .yaml extension).
+
+    Returns:
+        Data from the procedure YAML file.
+    """
     procedure_name = procedure_name.removesuffix('.yaml')
     yaml_file = DEMONSTRATION_ARTIFACTS_PATH / f"{procedure_name}.yaml"
-    if not yaml_file.exists():
-        raise Http404("Procedure not found")
 
-    try:
-        with open(yaml_file, 'r', encoding='utf-8') as f:
-            procedure = yaml.safe_load(f) or {}
-    except yaml.YAMLError as exc:
-        raise Http404(f"Invalid YAML for procedure '{procedure_name}': {exc}") from exc
+    with open(yaml_file, 'r', encoding='utf-8') as f:
+        procedure_data = yaml.safe_load(f) or {}
 
-    missing_fields = sorted(REQUIRED_PROCEDURE_FIELDS - set(procedure.keys()))
+    return procedure_data
+
+
+def vaildate_procedure(procedure_name: str, procedure_data: dict):
+    """Validate a procedure YAML file before rendering it.
+
+    Args: 
+        procedure_name (str): The name of the procedure YAML file (without the .yaml extension).
+        procedure_data (dict): Data from a procedure YAML file.
+    
+    Returns:
+        True if valid procedure. representing the validity of the procedure. If false, 
+        error message will be provided. 
+    """
+    REQUIRED_PROCEDURE_FIELDS = {'id', 'title', 'acceptance_criteria_ids', 'steps'}
+    REQUIRED_STEP_FIELDS = {'id', 'type', 'description', 'expected_result'}
+
+    missing_fields = sorted(REQUIRED_PROCEDURE_FIELDS - set(procedure_data.keys()))
     if missing_fields:
-        raise Http404(
-            f"Procedure '{procedure_name}' is missing required fields: {', '.join(missing_fields)}"
+        error_message = (
+            f"Procedure '{procedure_name}' is missing required fields: {', '.join(missing_fields)}."
         )
-
-    steps = procedure.get('steps', [])
+        return error_message
+       
+    steps = procedure_data.get('steps', [])
     if not isinstance(steps, list) or not steps:
-        raise Http404(f"Procedure '{procedure_name}' does not contain any steps.")
+        error_message = (f"Procedure '{procedure_name}' does not contain any steps.")
+        return error_message
 
     for index, step in enumerate(steps, start=1):
         if not isinstance(step, dict):
-            raise Http404(f"Step {index} in '{procedure_name}' is invalid.")
+            error_message = (f"Step {index} in '{procedure_name}' is invalid.")
+            return error_message
 
         missing_step_fields = sorted(REQUIRED_STEP_FIELDS - set(step.keys()))
         if missing_step_fields:
-            raise Http404(
+            error_message = (
                 "Procedure '{procedure_name}' step {index} is missing required fields: {fields}".format(
                     procedure_name=procedure_name,
                     index=index,
                     fields=', '.join(missing_step_fields),
                 )
             )
-
-    return procedure
+            return error_message
 
 
 def verification_home(request):
     """Renders the verification home page."""
     return render(request, 'verification/verification.html')
+
 
 def select_procedure(request):
     """Renders the page with a list of available procedures."""
@@ -70,10 +91,11 @@ def select_procedure(request):
     return render(request, 'verification/procedures.html', context)
 
 
-def procedure_steps(request, procedure_name, step_number=None):
+def procedure_steps(request, procedure_name: str, step_number: int = None):
     """Renders the steps page for a specific procedure."""
     procedure_name = procedure_name.removesuffix('.yaml')
-    procedure = load_procedure_data(procedure_name)
+    procedure = load_procedure(procedure_name)
+    vaildate_procedure(procedure_name, procedure)
 
     preconditions = procedure.get("preconditions", [])
     steps = procedure.get("steps", [])
@@ -102,10 +124,15 @@ def procedure_steps(request, procedure_name, step_number=None):
     return render(request, "verification/procedure_steps.html", context)
 
 
-def procedure_preconditions(request, procedure_name):
+def procedure_preconditions(request, procedure_name: str):
     """Renders the preconditions page for a specific procedure."""
     procedure_name = procedure_name.removesuffix('.yaml')
-    procedure = load_procedure_data(procedure_name)
+    procedure = load_procedure(procedure_name)
+    error = vaildate_procedure(procedure_name, procedure)
+
+    if error:
+        messages.error(request, error)
+        return redirect('procedures')
 
     preconditions = procedure.get("preconditions", [])
 

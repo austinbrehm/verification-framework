@@ -4,7 +4,7 @@ acceptance_criteria_ids:  # required
   - AC-001
   - AC-002
   - AC-003
-verification_method: demonstration  # required
+verification_method: demonstration  # recommended
 objective: Describe the purpose of this verification activity.  # recommended
 
 preconditions:  # optional
@@ -18,16 +18,13 @@ steps:
     action: launch_application  # optional
     description: Launch the application under test.  # required
     expected_result: The application starts successfully without errors.  # required
-    requires_human_approval: false  # optional
 
   - id: STEP-002  # required
     type: assisted  # required
     description: Perform the requested user action.  # required
     expected_result: The system responds as expected and the action completes successfully.  # required
-    requires_human_approval: true  # optional
 
   - id: STEP-003  # required
     type: verification  # required
     description: Review the final output or state.  # required
     expected_result: The final state matches the expected outcome described in the requirement.  # required
-    requires_human_approval: true  # optional

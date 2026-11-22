@@ -1,0 +1,12 @@
+id: TC-003
+title: Verify user flow
+acceptance_criteria_ids:
+  - AC-001
+verification_method: demonstration
+objective: This test case verifies a user flow.
+
+steps:
+  - id: STEP-001
+    type: manual
+    description: Launch the application.
+    expected_result: Application launches successfully

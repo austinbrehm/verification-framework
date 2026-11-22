@@ -1,0 +1,32 @@
+id: TC-002
+title: Verify user authentication with invalid credentials
+acceptance_criteria_ids:
+  - AC-001
+verification_method: demonstration
+objective: This test case verifies that the user authentication process works as expected.
+
+steps:
+  - id: STEP-001
+    type: automated
+    action: launch_application
+    description: Launch the application.
+    expected_result: Application launches successfully
+
+  - id: STEP-002
+    type: assisted
+    action: enter_credentials
+    description: Enter test credentials.
+    expected_result: Credentials are accepted
+
+  - id: STEP-003
+    type: automated
+    action: submit_login
+    description: Submit the login form.
+    expected_result: HTTP response is successful
+
+  - id: STEP-004
+    type: verification
+    action: verify_dashboard
+    description: Verification
+    expected_result: Dashboard is displayed
+    requires_human_approval: true

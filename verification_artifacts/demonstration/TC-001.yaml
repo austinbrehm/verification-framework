@@ -1,4 +1,3 @@
-
 id: TC-001
 title: Verify user authentication
 acceptance_criteria_ids:
@@ -20,7 +19,7 @@ steps:
     expected_result: Application launches successfully
 
   - id: STEP-002
-    type: assisted
+    type: manual
     action: enter_credentials
     description: Enter test credentials.
     expected_result: Credentials are accepted
