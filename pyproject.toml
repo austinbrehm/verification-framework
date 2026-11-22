@@ -28,5 +28,6 @@ python_functions = ["test_*"]
 [dependency-groups]
 dev = [
     "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
     "pytest-django>=4.14.0",
 ]
